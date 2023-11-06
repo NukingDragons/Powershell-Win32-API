@@ -1,3 +1,4 @@
+# Depends on LoadFunction.ps1
 function LoadLibraryA
 {
     param(

@@ -7,7 +7,7 @@ function LoadFunction
         [Parameter(Position = 2, Mandatory = $True)][Type[]] $FunctionParams,
         [Parameter(Position = 3)                   ][Type]   $FunctionRetType = [Void]
     )
-    
+
     # Get all of the unsafe methods from the System assembly
     $UnsafeMethods = ([AppDomain]::CurrentDomain.GetAssemblies() | where { $_.GlobalAssemblyCache -And $_.Location.Split('\\')[-1].Equals('System.dll') }).GetType('Microsoft.Win32.UnsafeNativeMethods').GetMethods()
 
