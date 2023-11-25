@@ -1,13 +1,13 @@
 ﻿function Merger()
 {
-	[CmdletBinding(DefaultParameterSetName="FunctionsMerger")]
-    param(
-        [Parameter(Position = 0, Mandatory = $True, ParameterSetName = "FunctionsMerger")]
+    [CmdletBinding(DefaultParameterSetName="FunctionsMerger")]
+	param(
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = "FunctionsMerger")]
 		[String[]] $FunctionsArray,
 
-        [Parameter(Position = 0, Mandatory = $True, ParameterSetName = "FileMerger")]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = "FileMerger")]
 		[String] $InputFile
-    )
+	)
 
 	function FetchFiles()
 	{

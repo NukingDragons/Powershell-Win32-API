@@ -11,19 +11,19 @@ class S_un_b : BaseWin32Class
 		return 4
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[Byte[]] $Data8 = @($this.s_b1, $this.s_b2, $this.s_b3, $this.s_b4)
 
 		[System.Runtime.InteropServices.Marshal]::Copy($Data8, 0, $Mem, $Data8.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[S_un_b] FromUnmanaged([IntPtr] $Unmanaged)
 	{

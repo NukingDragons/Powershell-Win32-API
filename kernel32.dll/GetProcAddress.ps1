@@ -1,10 +1,10 @@
 # Depends on LoadFunction.ps1
 function GetProcAddress
 {
-    param(
-        [Parameter(Position = 0, Mandatory = $True)][IntPtr] $hModule,
-        [Parameter(Position = 1, Mandatory = $True)][String] $lpProcName
-    )
+	param(
+		[Parameter(Position = 0, Mandatory = $True)][IntPtr] $hModule,
+		[Parameter(Position = 1, Mandatory = $True)][String] $lpProcName
+	)
 
 	if ($global:GetProcAddress -eq $null)
 	{

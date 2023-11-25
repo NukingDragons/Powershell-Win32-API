@@ -11,20 +11,20 @@ class PROCESS_INFORMATION : BaseWin32Class
 		return ([System.IntPtr]::Size * 2) + 8
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[IntPtr[]] $Pointers = @($this.hProcess, $this.hThread)
 		[UInt32[]] $Data32 = @($this.dwProcessId, $this.dwThreadId)
-        [System.Runtime.InteropServices.Marshal]::Copy($Pointers, 0, $Mem, $Pointers.Length)
-        [System.Runtime.InteropServices.Marshal]::Copy($Data32, 0, $Mem.ToInt64() + ($Pointers.Length * [System.IntPtr]::Size), $Data32.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Pointers, 0, $Mem, $Pointers.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Data32, 0, $Mem.ToInt64() + ($Pointers.Length * [System.IntPtr]::Size), $Data32.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[PROCESS_INFORMATION] FromUnmanaged([IntPtr] $Unmanaged)
 	{
@@ -38,6 +38,6 @@ class PROCESS_INFORMATION : BaseWin32Class
 		$this.dwProcessId = $Data32[0]
 		$this.dwThreadId = $Data32[1]
 
-        return $this
+		return $this
 	}
 }

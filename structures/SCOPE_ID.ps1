@@ -15,8 +15,8 @@ class SCOPE_ID : BaseWin32Union
 		return 4
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		[UInt32[]] $Data32 = [UInt32[]]::new(1)
 		$Size = $this.Size()
 		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
@@ -43,8 +43,8 @@ class SCOPE_ID : BaseWin32Union
 		# Normalize with the internal variables
 		$this.FromUnmanaged($Mem) | Out-Null
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[SCOPE_ID] FromUnmanaged([IntPtr] $Unmanaged)
 	{

@@ -9,12 +9,12 @@ class WSABUF : BaseWin32Class
 		return $this.buf.Length + 8
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[UInt64[]] $Data64 = [UInt64[]]::new(1)
 
@@ -30,8 +30,8 @@ class WSABUF : BaseWin32Class
 		[System.Runtime.InteropServices.Marshal]::Copy($Data64, 0, $Mem, $Data64.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($String, 0, $Mem.ToInt64() + 8, $Data64[0])
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[WSABUF] FromUnmanaged([IntPtr] $Unmanaged)
 	{

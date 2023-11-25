@@ -13,8 +13,8 @@ class IN6_ADDR_U : BaseWin32Union
 		return 16
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
 		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
 		[Byte[]] $Raw = [Byte[]]::new($Size)
@@ -44,8 +44,8 @@ class IN6_ADDR_U : BaseWin32Union
 		# Normalize with the internal variables
 		$this.FromUnmanaged($Mem) | Out-Null
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[IN6_ADDR_U] FromUnmanaged([IntPtr] $Unmanaged)
 	{

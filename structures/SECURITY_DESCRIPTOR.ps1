@@ -16,12 +16,12 @@ class SECURITY_DESCRIPTOR : BaseWin32Class
 		return 4 + ([System.IntPtr]::Size * 4)
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[Byte[]] $Data8 = @($this.Revision, $this.Sbz1)
 		[UInt16[]] $Data16 = @($this.Control)
@@ -32,12 +32,12 @@ class SECURITY_DESCRIPTOR : BaseWin32Class
 		if ($this.Sacl) { $Pointers[2] = $this.Sacl.ToUnmanaged() }
 		if ($this.Dacl) { $Pointers[3] = $this.Dacl.ToUnmanaged() }
 
-        [System.Runtime.InteropServices.Marshal]::Copy($Data8, 0, $Mem, $Data8.Length)
-        [System.Runtime.InteropServices.Marshal]::Copy($Data16, 0, $Mem.ToInt64() + 2, $Data16.Length)
-        [System.Runtime.InteropServices.Marshal]::Copy($Pointers, 0, $Mem.ToInt64() + 4, $Pointers.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Data8, 0, $Mem, $Data8.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Data16, 0, $Mem.ToInt64() + 2, $Data16.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Pointers, 0, $Mem.ToInt64() + 4, $Pointers.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[SECURITY_DESCRIPTOR] FromUnmanaged([IntPtr] $Unmanaged)
 	{
@@ -45,9 +45,9 @@ class SECURITY_DESCRIPTOR : BaseWin32Class
 		[UInt16[]] $Data16 = [UInt16[]]::new(1)
 		[IntPtr[]] $Pointers = [IntPtr[]]::new(4)
 
-        [System.Runtime.InteropServices.Marshal]::Copy($Unmanaged, $Data8, 0, $Data8.Length)
-        [System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 2, $Data16, 0, $Data16.Length)
-        [System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 4, $Pointers, 0, $Pointers.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged, $Data8, 0, $Data8.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 2, $Data16, 0, $Data16.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 4, $Pointers, 0, $Pointers.Length)
 
 		$this.Revision = $Data8[0]
 		$this.Sbz1 = $Data8[1]
@@ -65,7 +65,7 @@ class SECURITY_DESCRIPTOR : BaseWin32Class
 	{
 		[IntPtr[]] $Pointers = [IntPtr[]]::new(4)
 
-        [System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 4, $Pointers, 0, $Pointers.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 4, $Pointers, 0, $Pointers.Length)
 
 		if ($Pointers[0] -ne [IntPtr]::Zero) { ([SID]::new()).FreeUnmanaged($Pointers[0]) }
 		if ($Pointers[1] -ne [IntPtr]::Zero) { ([SID]::new()).FreeUnmanaged($Pointers[1]) }

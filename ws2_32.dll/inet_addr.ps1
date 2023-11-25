@@ -1,9 +1,9 @@
 # Depends on LoadFunction.ps1
 function inet_addr
 {
-    param(
-        [Parameter(Position = 0, Mandatory = $True)][String] $cp
-    )
+	param(
+		[Parameter(Position = 0, Mandatory = $True)][String] $cp
+	)
 
 	if ($global:inet_addr -eq $null)
 	{

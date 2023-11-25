@@ -45,8 +45,8 @@ class BaseWin32Class
 		$Unmanaged = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
 		[System.Runtime.InteropServices.Marshal]::Copy($Raw, $Unmanaged, 0, $Raw.Length)
 
-        $Length = $Bytes.Length
-        if ($Length -gt $Size) { $Length = $Size }
+		$Length = $Bytes.Length
+		if ($Length -gt $Size) { $Length = $Size }
 
 		[System.Runtime.InteropServices.Marshal]::Copy($Bytes, $Unmanaged, 0, $Length)
 

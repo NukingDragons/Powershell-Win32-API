@@ -12,12 +12,12 @@ class ACL : BaseWin32Class
 		return 8
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[Byte[]] $Data8 = @($this.AclRevision, $this.Sbz1)
 		[UInt16[]] $Data16 = @($this.AclSize, $this.AceCount, $this.Sbz2)
@@ -25,8 +25,8 @@ class ACL : BaseWin32Class
 		[System.Runtime.InteropServices.Marshal]::Copy($Data8, 0, $Mem, $Data8.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($Data16, 0, $Mem.ToInt64() + 2, $Data16.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[ACL] FromUnmanaged([IntPtr] $Unmanaged)
 	{

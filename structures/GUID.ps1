@@ -11,25 +11,25 @@ class GUID : BaseWin32Class
 		return 20
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[UInt64[]] $Data64 = @($this.Data1)
 		[UInt16[]] $Data16 = @($this.Data2, $this.Data3)
 
-        $Length = $this.Data4.Length
-        if ($Length -gt 8) { $Length = 8 }
+		$Length = $this.Data4.Length
+		if ($Length -gt 8) { $Length = 8 }
 
 		[System.Runtime.InteropServices.Marshal]::Copy($Data64, 0, $Mem, $Data64.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($Data16, 0, $Mem.ToInt64() + 8, $Data16.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($this.Data4, 0, $Mem.ToInt64() + 12, $Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[GUID] FromUnmanaged([IntPtr] $Unmanaged)
 	{

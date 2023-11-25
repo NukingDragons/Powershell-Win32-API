@@ -11,12 +11,12 @@ class SECURITY_ATTRIBUTES : BaseWin32Class
 		return 8 + [System.IntPtr]::Size
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[IntPtr] $SecurityDescriptor = [IntPtr]::Zero
 		if ($this.lpSecurityDescriptor) { $SecurityDescriptor = $this.lpSecurityDescriptor.ToUnmanaged() }
@@ -25,12 +25,12 @@ class SECURITY_ATTRIBUTES : BaseWin32Class
 		[IntPtr[]] $Pointer = @($SecurityDescriptor)
 		[UInt32[]] $Data2 = @($this.bInheritHandle)
 
-        [System.Runtime.InteropServices.Marshal]::Copy($Data1, 0, $Mem, $Data1.Length)
-        [System.Runtime.InteropServices.Marshal]::Copy($Pointer, 0, $Mem.ToInt64() + 4, $Pointer.Length)
-        [System.Runtime.InteropServices.Marshal]::Copy($Data2, 0, $Mem.ToInt64() + 4 + ([System.IntPtr]::Size * $Pointer.Length), $Data2.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Data1, 0, $Mem, $Data1.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Pointer, 0, $Mem.ToInt64() + 4, $Pointer.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Data2, 0, $Mem.ToInt64() + 4 + ([System.IntPtr]::Size * $Pointer.Length), $Data2.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[SECURITY_ATTRIBUTES] FromUnmanaged([IntPtr] $Unmanaged)
 	{

@@ -14,8 +14,8 @@ class WSADATA : BaseWin32Class
 		return [System.IntPtr]::Size + 255 + 127 + 10
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		[Byte[]] $szAnsis = [Byte[]]::new(255 + 127 + 2)
 
 		if ($this.szDescription)
@@ -35,9 +35,9 @@ class WSADATA : BaseWin32Class
 		}
 
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[UInt16[]] $Data16_1 = @($this.wVersion, $this.wHighVersion)
 		[UInt16[]] $Data16_2 = @($this.iMaxSockets, $this.iMaxUdpDg)
@@ -54,8 +54,8 @@ class WSADATA : BaseWin32Class
 		[System.Runtime.InteropServices.Marshal]::Copy($Data16_2, 0, $Mem.ToInt64() + 4 + $szAnsis.Length, $Data16_2.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($lpVendorInfoAnsi, 0, $Mem.ToInt64() + 8 + $szAnsis.Length, $lpVendorInfoAnsi.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[WSADATA] FromUnmanaged([IntPtr] $Unmanaged)
 	{

@@ -9,10 +9,10 @@ class IN6_ADDR : BaseWin32Class
 		return $this.u.Size()
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		return $this.u.ToUnmanaged()
-    }
+	}
 
 	[IN_ADDR] FromUnmanaged([IntPtr] $Unmanaged)
 	{

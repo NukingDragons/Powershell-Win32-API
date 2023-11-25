@@ -15,12 +15,12 @@ class FLOWSPEC : BaseWin32Class
 		return 60
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[UInt64[]] $Data64_1 = @($this.TokenRate, $this.TokenBucketSize, $this.PeakBandwidth, $this.Latency, $this.DelayVariation)
 		[UInt32[]] $Data32 = @($this.ServiceType)
@@ -30,8 +30,8 @@ class FLOWSPEC : BaseWin32Class
 		[System.Runtime.InteropServices.Marshal]::Copy($Data32, 0, $Mem.ToInt64() + $Data64_1.Length, $Data32.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($Data64_2, 0, $Mem.ToInt64() + $Data64_1.Length + $Data32.Length, $Data64_2.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[FLOWSPEC] FromUnmanaged([IntPtr] $Unmanaged)
 	{

@@ -13,8 +13,8 @@ class IN_ADDR : BaseWin32Union
 		return $this.S_un.Size()
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		if ($this.s_addr -ne $this.s_addr_internal)
 		{
 			$this.S_un.S_addr = $this.s_addr
@@ -26,7 +26,7 @@ class IN_ADDR : BaseWin32Union
 		$this.FromUnmanaged($Mem) | Out-Null
 
 		return $Mem
-    }
+	}
 
 	[IN_ADDR] FromUnmanaged([IntPtr] $Unmanaged)
 	{

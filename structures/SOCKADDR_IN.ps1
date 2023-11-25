@@ -12,27 +12,27 @@ class SOCKADDR_IN : BaseWin32Class
 		return 12 + $this.sin_addr.Size()
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[Int16[]] $Data16_1 = @($this.sin_family)
 		[UInt16[]] $Data16_2 = @($this.sin_port)
 		[Byte[]] $Addr = $this.sin_addr.ToBytes()
 
-        $Length = $this.sin_zero.Length
-        if ($Length -gt $Size) { $Length = $Size }
+		$Length = $this.sin_zero.Length
+		if ($Length -gt $Size) { $Length = $Size }
 
 		[System.Runtime.InteropServices.Marshal]::Copy($Data16_1, 0, $Mem, $Data16_1.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($Data16_2, 0, $Mem.ToInt64() + 2, $Data16_2.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($Addr, 0, $Mem.ToInt64() + 4, $Addr.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($this.sin_zero, 0, $Mem.ToInt64() + 4 + $Addr.Length, $Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[SOCKADDR_IN] FromUnmanaged([IntPtr] $Unmanaged)
 	{

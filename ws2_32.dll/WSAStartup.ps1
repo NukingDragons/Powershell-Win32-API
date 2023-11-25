@@ -2,10 +2,10 @@
 # Depends on structures/WSADATA.ps1
 function WSAStartup
 {
-    param(
-        [Parameter(Position = 0, Mandatory = $True)][UInt16] $wVersionRequired,
-        [Parameter(Position = 1, Mandatory = $True)][WSADATA] $lpWSAData
-    )
+	param(
+		[Parameter(Position = 0, Mandatory = $True)][UInt16] $wVersionRequired,
+		[Parameter(Position = 1, Mandatory = $True)][WSADATA] $lpWSAData
+	)
 
 	if ($global:WSAStartup -eq $null)
 	{

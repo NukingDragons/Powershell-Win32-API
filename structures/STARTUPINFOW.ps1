@@ -22,14 +22,14 @@ class STARTUPINFOW : BaseWin32Class
 		return 40 + ([System.IntPtr]::Size * 7)
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
-        [UInt32[]] $CountBytes = @($this.cb)
+		[UInt32[]] $CountBytes = @($this.cb)
 		[IntPtr[]] $Strings = @([System.Runtime.InteropServices.Marshal]::StringToHGlobalUni($this.lpDesktop), [System.Runtime.InteropServices.Marshal]::StringToHGlobalUni($this.lpTitle))
 		[UInt32[]] $Data32 = @($this.dwX, $this.dwY, $this.dwXSize, $this.dwYSize, $this.dwXCountChars, $this.dwYCountChars, $this.dwFillAttribute, $this.dwFlags)
 		[UInt16[]] $Data16 = @($this.wShowWindow)
@@ -45,12 +45,12 @@ class STARTUPINFOW : BaseWin32Class
 		$Offset += 2
 		[System.Runtime.InteropServices.Marshal]::Copy($Stdio, 0, $Mem.ToInt64() + $Offset, $Stdio.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[STARTUPINFOW] FromUnmanaged([IntPtr] $Unmanaged)
 	{
-        [UInt32[]] $CountBytes = [UInt32[]]::new(1)
+		[UInt32[]] $CountBytes = [UInt32[]]::new(1)
 		[IntPtr[]] $Strings = [IntPtr[]]::new(2)
 		[UInt32[]] $Data32 = [UInt32[]]::new(8)
 		[UInt16[]] $Data16 = [UInt32[]]::new(1)
@@ -66,7 +66,7 @@ class STARTUPINFOW : BaseWin32Class
 		$Offset += 2
 		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + $Offset, $Stdio, 0, $Stdio.Length)
 
-        $this.cb = $CountBytes[0]
+		$this.cb = $CountBytes[0]
 		$this.lpDesktop = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Strings[0])
 		$this.lpTitle = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($Strings[0])
 		$this.dwX = $Data32[0]

@@ -17,8 +17,8 @@ class S_un : BaseWin32Union
 		return 4
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		[IntPtr] $Mem = [IntPtr]::Zero
 
 		# Determine which source to use
@@ -49,8 +49,8 @@ class S_un : BaseWin32Union
 		# Normalize with the internal variables
 		$this.FromUnmanaged($Mem) | Out-Null
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[S_un] FromUnmanaged([IntPtr] $Unmanaged)
 	{

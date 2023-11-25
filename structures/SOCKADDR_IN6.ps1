@@ -21,12 +21,12 @@ class SOCKADDR_IN6 : BaseWin32Union
 		return 12 + $this.sin6_addr.Size()
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[Int16[]] $Data16_1 = @($this.sin6_family)
 		[UInt16[]] $Data16_2 = @($this.sin6_port)
@@ -67,8 +67,8 @@ class SOCKADDR_IN6 : BaseWin32Union
 		# Normalize with the internal variables
 		$this.FromUnmanaged($Mem) | Out-Null
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[SOCKADDR_IN6] FromUnmanaged([IntPtr] $Unmanaged)
 	{

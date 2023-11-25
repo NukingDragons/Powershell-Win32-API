@@ -29,8 +29,8 @@ class WSAPROTOCOL_INFOA : BaseWin32Class
 		return $this.ProviderID.Size() + $this.ProtocolChain.Size() + 256 + 68
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		[Byte[]] $szAnsis = [Byte[]]::new(255 + 1)
 
 		if ($this.szProtocol)
@@ -42,9 +42,9 @@ class WSAPROTOCOL_INFOA : BaseWin32Class
 		}
 
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[UInt32[]] $Data32_1 = @($this.dwServiceFlags1, $this.dwServiceFlags2, $this.dwServiceFlags3, $this.dwServiceFlags4, $this.dwProviderFlags)
 		[Byte[]] $ProviderIdBytes = $this.ProviderId.ToBytes()
@@ -67,8 +67,8 @@ class WSAPROTOCOL_INFOA : BaseWin32Class
 		$Offset += $Data32_4.Length * 4
 		[System.Runtime.InteropServices.Marshal]::Copy($szAnsis, 0, $Mem.ToInt64() + $Offset, $szAnsis.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[WSAPROTOCOL_INFOA] FromUnmanaged([IntPtr] $Unmanaged)
 	{

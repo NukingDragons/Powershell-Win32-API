@@ -2,14 +2,14 @@
 # Depends on structures/WSAPROTOCOL_INFOA.ps1
 function WSASocketA
 {
-    param(
-        [Parameter(Position = 0, Mandatory = $True)][Int32] $af,
-        [Parameter(Position = 1, Mandatory = $True)][Int32] $type,
-        [Parameter(Position = 2, Mandatory = $True)][Int32] $protocol,
-        [Parameter(Position = 3                   )][WSAPROTOCOL_INFOA] $lpProtocolInfo = $null,
-        [Parameter(Position = 4                   )][UInt32] $g = 0,
-        [Parameter(Position = 5                   )][UInt32] $dwFlags = 0
-    )
+	param(
+		[Parameter(Position = 0, Mandatory = $True)][Int32] $af,
+		[Parameter(Position = 1, Mandatory = $True)][Int32] $type,
+		[Parameter(Position = 2, Mandatory = $True)][Int32] $protocol,
+		[Parameter(Position = 3                   )][WSAPROTOCOL_INFOA] $lpProtocolInfo = $null,
+		[Parameter(Position = 4                   )][UInt32] $g = 0,
+		[Parameter(Position = 5                   )][UInt32] $dwFlags = 0
+	)
 
 	if ($global:WSASocketA -eq $null)
 	{

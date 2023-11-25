@@ -1,9 +1,9 @@
 # Depends on LoadFunction.ps1
 function htons
 {
-    param(
-        [Parameter(Position = 0, Mandatory = $True)][UInt16] $hostshort
-    )
+	param(
+		[Parameter(Position = 0, Mandatory = $True)][UInt16] $hostshort
+	)
 
 	if ($global:htons -eq $null)
 	{

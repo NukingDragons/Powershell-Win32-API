@@ -5,9 +5,9 @@
 # Depends on structures/WSABUF.ps1
 function WSAConnect
 {
-    param(
-        [Parameter(Position = 0, Mandatory = $True)][UInt64] $s,
-        [Parameter(Position = 1, Mandatory = $True)]
+	param(
+		[Parameter(Position = 0, Mandatory = $True)][UInt64] $s,
+		[Parameter(Position = 1, Mandatory = $True)]
 		[ValidateScript({
 			if($_.GetType().Name -eq "SOCKADDR_IN" -or $_.GetType().Name -eq "SOCKADDR_IN6")
 			{
@@ -19,12 +19,12 @@ function WSAConnect
 			}
 			})]
 		[System.Object] $name,
-        [Parameter(Position = 2, Mandatory = $True)][Int32] $namelen,
-        [Parameter(Position = 3                   )][WSABUF] $lpCallerData = $null,
-        [Parameter(Position = 4                   )][WSABUF] $lpCalleeData = $null,
-        [Parameter(Position = 5                   )][QOS] $lpSQOS = $null,
-        [Parameter(Position = 6                   )][QOS] $lpGQOS = $null
-    )
+		[Parameter(Position = 2, Mandatory = $True)][Int32] $namelen,
+		[Parameter(Position = 3                   )][WSABUF] $lpCallerData = $null,
+		[Parameter(Position = 4                   )][WSABUF] $lpCalleeData = $null,
+		[Parameter(Position = 5                   )][QOS] $lpSQOS = $null,
+		[Parameter(Position = 6                   )][QOS] $lpGQOS = $null
+	)
 
 	if ($global:WSAConnect -eq $null)
 	{

@@ -12,12 +12,12 @@ class QOS : BaseWin32Class
 		return $this.SendingFlowSpec.Size() + $this.ReceivingFlowspec.Size() + $this.ProviderSpecific.Size()
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[Byte[]] $Data8_1 = $this.SendingFlowspec.ToBytes()
 		[Byte[]] $Data8_2 = $this.ReceivingFlowspec.ToBytes()
@@ -27,8 +27,8 @@ class QOS : BaseWin32Class
 		[System.Runtime.InteropServices.Marshal]::Copy($Data8_2, 0, $Mem.ToInt64() + $Data8_1.Length, $Data8_2.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($Data8_3, 0, $Mem.ToInt64() + ($Data8_1.Length * 2), $Data8_3.Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[QOS] FromUnmanaged([IntPtr] $Unmanaged)
 	{

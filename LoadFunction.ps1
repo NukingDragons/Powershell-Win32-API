@@ -3,12 +3,12 @@
 # Function for finding function addresses
 function LoadFunction
 {
-    param(
-        [Parameter(Position = 0, Mandatory = $True)][String] $ModuleName,
-        [Parameter(Position = 1, Mandatory = $True)][String] $FunctionName,
-        [Parameter(Position = 2, Mandatory = $True)][Type[]] $FunctionParams,
-        [Parameter(Position = 3)                   ][Type]   $FunctionRetType = [Void]
-    )
+	param(
+		[Parameter(Position = 0, Mandatory = $True)][String] $ModuleName,
+		[Parameter(Position = 1, Mandatory = $True)][String] $FunctionName,
+		[Parameter(Position = 2, Mandatory = $True)][Type[]] $FunctionParams,
+		[Parameter(Position = 3)                   ][Type]   $FunctionRetType = [Void]
+	)
 
 	[IntPtr] $FuncPtr = [IntPtr]::Zero
 
@@ -50,17 +50,17 @@ function LoadFunction
 		throw 'Failed to find "' + $FunctionName + '" within "' + $ModuleName + '"!'
 	}
 
-    # Assembly type builder
-    $TypeBuilder = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('InMemoryModule', $false).DefineType('MyDelegateType', 'Class, Public, Sealed, AnsiClass, AutoClass', [System.MulticastDelegate])
+	# Assembly type builder
+	$TypeBuilder = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('InMemoryModule', $false).DefineType('MyDelegateType', 'Class, Public, Sealed, AnsiClass, AutoClass', [System.MulticastDelegate])
 
-    # Constructor builder for the type
-    $ConstructorBuilder = $TypeBuilder.DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $FunctionParams)
-    $ConstructorBuilder.SetImplementationFlags('Runtime, Managed')
+	# Constructor builder for the type
+	$ConstructorBuilder = $TypeBuilder.DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $FunctionParams)
+	$ConstructorBuilder.SetImplementationFlags('Runtime, Managed')
 
-    # Method builder for the type
-    $MethodBuilder = $TypeBuilder.DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $FunctionRetType, $FunctionParams)
-    $MethodBuilder.SetImplementationFlags('Runtime, Managed')
+	# Method builder for the type
+	$MethodBuilder = $TypeBuilder.DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $FunctionRetType, $FunctionParams)
+	$MethodBuilder.SetImplementationFlags('Runtime, Managed')
 
-    # Assign the type to the function pointer
-    return [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($FuncPtr, $TypeBuilder.CreateType())
+	# Assign the type to the function pointer
+	return [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($FuncPtr, $TypeBuilder.CreateType())
 }

@@ -1,9 +1,9 @@
 # Depends on LoadFunction.ps1
 function LoadLibraryA
 {
-    param(
-        [Parameter(Position = 0, Mandatory = $True)][String] $lpLibFileName
-    )
+	param(
+		[Parameter(Position = 0, Mandatory = $True)][String] $lpLibFileName
+	)
 
 	if ($global:LoadLibraryA -eq $null)
 	{

@@ -9,23 +9,23 @@ class WSAPROTOCOLCHAIN : BaseWin32Class
 		return 32
 	}
 
-    [IntPtr] ToUnmanaged()
-    {
+	[IntPtr] ToUnmanaged()
+	{
 		$Size = $this.Size()
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
-        [Byte[]] $Raw = [Byte[]]::new($Size)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
+		$Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+		[Byte[]] $Raw = [Byte[]]::new($Size)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[Int32[]] $Data32 = @($this.ChainLen)
 
-        $Length = $this.ChainEntries.Length
-        if ($Length -gt 7) { $Length = 7 }
+		$Length = $this.ChainEntries.Length
+		if ($Length -gt 7) { $Length = 7 }
 
 		[System.Runtime.InteropServices.Marshal]::Copy($Data32, 0, $Mem, $Data32.Length)
 		[System.Runtime.InteropServices.Marshal]::Copy($this.ChainEntries, 0, $Mem.ToInt64() + 4, $Length)
 
-        return $Mem
-    }
+		return $Mem
+	}
 
 	[WSAPROTOCOLCHAIN] FromUnmanaged([IntPtr] $Unmanaged)
 	{
