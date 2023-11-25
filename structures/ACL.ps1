@@ -1,4 +1,5 @@
-class ACL
+# Depends on BaseWin32Class.ps1
+class ACL : BaseWin32Class
 {
 	[Byte] $AclRevision
 	[Byte] $Sbz1
@@ -6,9 +7,14 @@ class ACL
 	[UInt16] $AceCount
 	[UInt16] $Sbz2
 
+	[UInt64] Size()
+	{
+		return 8
+	}
+
     [IntPtr] ToUnmanaged()
     {
-		$Size = 8
+		$Size = $this.Size()
         $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
         [Byte[]] $Raw = [Byte[]]::new($Size)
         [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
@@ -17,7 +23,7 @@ class ACL
 		[UInt16[]] $Data16 = @($this.AclSize, $this.AceCount, $this.Sbz2)
 
 		[System.Runtime.InteropServices.Marshal]::Copy($Data8, 0, $Mem, $Data8.Length)
-		[System.Runtime.InteropServices.Marshal]::Copy($Data16, 0, $Mem, $Data16.Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Data16, 0, $Mem.ToInt64() + 2, $Data16.Length)
 
         return $Mem
     }
@@ -37,10 +43,5 @@ class ACL
 		$this.Sbz2 = $Data16[2]
 
 		return $this
-	}
-
-	[Void] FreeUnmanaged([IntPtr] $Unmanaged)
-	{
-		[System.Runtime.InteropServices.Marshal]::FreeHGlobal($Unmanaged)
 	}
 }

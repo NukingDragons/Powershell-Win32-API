@@ -1,22 +1,24 @@
+# Depends on BaseWin32Class.ps1
 # Depends on structures/SECURITY_DESCRIPTOR.ps1
-# Depends on structures/SID.ps1
-# Depends on structures/SID_IDENTIFIER_AUTHORITY.ps1
-# Depends on structures/ACL.ps1
-class SECURITY_ATTRIBUTES
+class SECURITY_ATTRIBUTES : BaseWin32Class
 {
 	[UInt32] $nLength
 	[SECURITY_DESCRIPTOR] $lpSecurityDescriptor = $null
 	[Bool] $bInheritHandle
 
+	[UInt64] Size()
+	{
+		return 8 + [System.IntPtr]::Size
+	}
+
     [IntPtr] ToUnmanaged()
     {
-		$Size = 12
+		$Size = $this.Size()
         $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
         [Byte[]] $Raw = [Byte[]]::new($Size)
         [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[IntPtr] $SecurityDescriptor = [IntPtr]::Zero
-
 		if ($this.lpSecurityDescriptor) { $SecurityDescriptor = $this.lpSecurityDescriptor.ToUnmanaged() }
 
 		[UInt32[]] $Data1 = @($this.nLength)

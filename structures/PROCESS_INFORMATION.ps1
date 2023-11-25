@@ -1,15 +1,22 @@
-class PROCESS_INFORMATION
+# Depends on BaseWin32Class.ps1
+class PROCESS_INFORMATION : BaseWin32Class
 {
 	[IntPtr] $hProcess
 	[IntPtr] $hThread
 	[UInt32] $dwProcessId
 	[UInt32] $dwThreadId
 
+	[UInt64] Size()
+	{
+		return ([System.IntPtr]::Size * 2) + 8
+	}
+
     [IntPtr] ToUnmanaged()
     {
-        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal(16)
-        [Byte[]] $Raw = [Byte[]]::new(16)
-        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, 6)
+		$Size = $this.Size()
+        $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
+        [Byte[]] $Raw = [Byte[]]::new($Size)
+        [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)
 
 		[IntPtr[]] $Pointers = @($this.hProcess, $this.hThread)
 		[UInt32[]] $Data32 = @($this.dwProcessId, $this.dwThreadId)
@@ -32,10 +39,5 @@ class PROCESS_INFORMATION
 		$this.dwThreadId = $Data32[1]
 
         return $this
-	}
-
-	[Void] FreeUnmanaged([IntPtr] $Unmanaged)
-	{
-		[System.Runtime.InteropServices.Marshal]::FreeHGlobal($Unmanaged)
 	}
 }

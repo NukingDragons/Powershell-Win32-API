@@ -1,6 +1,7 @@
-class STARTUPINFOA
+# Depends on BaseWin32Class.ps1
+class STARTUPINFOA : BaseWin32Class
 {
-	[UInt32] $cb = 40 * ([System.IntPtr]::Size * 7)
+	[UInt32] $cb = $this.Size()
 	[String] $lpDesktop
 	[String] $lpTitle
 	[UInt32] $dwX
@@ -16,9 +17,14 @@ class STARTUPINFOA
 	[IntPtr] $hStdOutput
 	[IntPtr] $hStdError
 
+	[UInt64] Size()
+	{
+		return 40 + ([System.IntPtr]::Size * 7)
+	}
+
     [IntPtr] ToUnmanaged()
     {
-		$Size = 40 + ([System.IntPtr]::Size * 7)
+		$Size = $this.Size()
         $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
         [Byte[]] $Raw = [Byte[]]::new($Size)
         [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)

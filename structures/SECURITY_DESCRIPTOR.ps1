@@ -1,7 +1,7 @@
+# Depends on BaseWin32Class.ps1
 # Depends on structures/SID.ps1
-# Depends on structures/SID_IDENTIFIER_AUTHORITY.ps1
 # Depends on structures/ACL.ps1
-class SECURITY_DESCRIPTOR
+class SECURITY_DESCRIPTOR : BaseWin32Class
 {
 	[Byte] $Revision
 	[Byte] $Sbz1
@@ -11,9 +11,14 @@ class SECURITY_DESCRIPTOR
 	[ACL] $Sacl = $null
 	[ACL] $Dacl = $null
 
+	[UInt64] Size()
+	{
+		return 4 + ([System.IntPtr]::Size * 4)
+	}
+
     [IntPtr] ToUnmanaged()
     {
-		$Size = 20
+		$Size = $this.Size()
         $Mem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Size)
         [Byte[]] $Raw = [Byte[]]::new($Size)
         [System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $Mem, $Size)

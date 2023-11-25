@@ -2,10 +2,6 @@
 # Depends on structures/STARTUPINFOW.ps1
 # Depends on structures/PROCESS_INFORMATION.ps1
 # Depends on structures/SECURITY_ATTRIBUTES.ps1
-# Depends on structures/SECURITY_DESCRIPTOR.ps1
-# Depends on structures/SID.ps1
-# Depends on structures/SID_IDENTIFIER_AUTHORITY.ps1
-# Depends on structures/ACL.ps1
 function CreateProcessW
 {
 	[CmdletBinding(DefaultParameterSetName="ApplicationName")]
@@ -61,7 +57,10 @@ function CreateProcessW
 		[PROCESS_INFORMATION] $lpProcessInformation
     )
 
-	$CreateProcessW = LoadFunction kernel32.dll CreateProcessW @([IntPtr], [IntPtr], [IntPtr], [IntPtr], [UInt32], [UInt32], [IntPtr], [IntPtr], [IntPtr], [IntPtr]) ([IntPtr])
+	if ($global:CreateProcessW -eq $null)
+	{
+		$global:CreateProcessW = LoadFunction kernel32.dll CreateProcessW @([IntPtr], [IntPtr], [IntPtr], [IntPtr], [UInt32], [UInt32], [IntPtr], [IntPtr], [IntPtr], [IntPtr]) ([IntPtr])
+	}
 
 	$lpApplicationNameUni = [IntPtr]::Zero
 	$lpCommandLineUni = [IntPtr]::Zero
@@ -79,7 +78,7 @@ function CreateProcessW
 	if ($bInheritHandles) { $InHeritHandles = 1 }
 	if ($lpCurrentDirectory) { $lpCurrentDirectoryUni = [System.Runtime.InteropServices.Marshal]::StringToHGlobalUni($lpCurrentDirectory) }
 
-	$ret = $CreateProcessW.Invoke($lpApplicationNameUni, $lpCommandLineUni, $lpProcessAttributesMem, $lpThreadAttributesMem, $InheritHandles, $dwCreationFlags, $lpEnvironment, $lpCurrentDirectoryUni, $lpStartupInfoMem, $lpProcessInformationMem)
+	$ret = $global:CreateProcessW.Invoke($lpApplicationNameUni, $lpCommandLineUni, $lpProcessAttributesMem, $lpThreadAttributesMem, $InheritHandles, $dwCreationFlags, $lpEnvironment, $lpCurrentDirectoryUni, $lpStartupInfoMem, $lpProcessInformationMem)
 
 	if ($lpApplicationName) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpApplicationNameUni) }
 	if ($lpProcessAttributes) { $lpProcessAttributes.FreeUnmanaged($lpProcessAttributesMem) }

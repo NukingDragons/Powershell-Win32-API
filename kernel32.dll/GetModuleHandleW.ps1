@@ -5,11 +5,16 @@ function GetModuleHandleW
         [Parameter(Position = 0,                  )][String] $lpModuleName = ""
     )
 
-	$GetModuleHandleW = LoadFunction kernel32.dll GetModuleHandleW @([IntPtr]) ([IntPtr])
+	if ($global:GetModuleHandleW -eq $null)
+	{
+		$global:GetModuleHandleW = LoadFunction kernel32.dll GetModuleHandleW @([IntPtr]) ([IntPtr])
+	}
 
 	$lpModuleNameUni = [IntPtr]::Zero
 	if ($lpModuleName) { $lpModuleNameUni = [System.Runtime.InteropServices.Marshal]::StringToHGlobalUni($lpModuleName) }
-	$ret = $GetModuleHandleW.Invoke($lpModuleNameUni)
+
+	$ret = $global:GetModuleHandleW.Invoke($lpModuleNameUni)
+
 	if ($lpModuleName) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpModuleNameUni) }
 
 	return $ret
