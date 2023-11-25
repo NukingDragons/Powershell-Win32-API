@@ -5,7 +5,7 @@
 		[Parameter(Position = 1, Mandatory = $True)][String] $ModuleName
 	)
 
-	function dumpbin()
+	function dumpbin
 	{
 		param(
 			[Parameter(Position = 0, Mandatory = $True)][String] $File
