@@ -1,6 +1,13 @@
 # Powershell-Win32-API
 A collection of powershell scripts that implement the Win32 API
 
+# Progress
+
+| Module | Percentage Implemented |
+| - | - |
+| kernel32.dll | 0.43% |
+| ws2_32.dll | 3.08% |
+
 # Usage
 
 Each script will not contain it's dependencies, however the dependencies will be listed at the top of the file in comments.
