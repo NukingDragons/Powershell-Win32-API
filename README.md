@@ -15,14 +15,14 @@ I decided to create it this way such that there isn't a single "win32-api.ps1" f
 
 To use a set of functions, use the provided "Merger.ps1" file and select your functions:
 
-```
+```powershell
 . .\Merger.ps1
 Merger @("Function1", "Function2") > Funcs.ps1
 ```
 
 Alternatively, you can create a file that "imports" the functions it needs by adding a "# Depends on kernel32.dll/function1.ps1", etc to the top of the file. Then you can use the merger like so:
 
-```
+```powershell
 . .\Merger.ps1
 Merger -InputFile "YourFile.ps1" > Merged.ps1
 ```
