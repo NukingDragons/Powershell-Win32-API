@@ -25,6 +25,7 @@ class SID_IDENTIFIER_AUTHORITY : BaseWin32Class
 
 	[SID_IDENTIFIER_AUTHORITY] FromUnmanaged([IntPtr] $Unmanaged)
 	{
+		$Size = $this.Size()
 		$this.Value = [Byte[]]::new($Size)
 		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged, $this.Value, 0, $this.Value.Length)
 

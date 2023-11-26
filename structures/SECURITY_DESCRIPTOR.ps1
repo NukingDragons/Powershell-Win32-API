@@ -13,7 +13,9 @@ class SECURITY_DESCRIPTOR : BaseWin32Class
 
 	[UInt64] Size()
 	{
-		return 4 + ([System.IntPtr]::Size * 4)
+		$Padding = 0
+		if ([System.IntPtr]::Size -eq 8) { $Padding = 4 }
+		return 4 + ([System.IntPtr]::Size * 4) + $Padding
 	}
 
 	[IntPtr] ToUnmanaged()
@@ -33,8 +35,11 @@ class SECURITY_DESCRIPTOR : BaseWin32Class
 		if ($this.Dacl) { $Pointers[3] = $this.Dacl.ToUnmanaged() }
 
 		[System.Runtime.InteropServices.Marshal]::Copy($Data8, 0, $Mem, $Data8.Length)
-		[System.Runtime.InteropServices.Marshal]::Copy($Data16, 0, $Mem.ToInt64() + 2, $Data16.Length)
-		[System.Runtime.InteropServices.Marshal]::Copy($Pointers, 0, $Mem.ToInt64() + 4, $Pointers.Length)
+		$Offset = 2
+		[System.Runtime.InteropServices.Marshal]::Copy($Data16, 0, $Mem.ToInt64() + $Offset, $Data16.Length)
+		$Offset += 2
+		if ([System.IntPtr]::Size -eq 8) { $Offset += 4 }
+		[System.Runtime.InteropServices.Marshal]::Copy($Pointers, 0, $Mem.ToInt64() + $Offset, $Pointers.Length)
 
 		return $Mem
 	}
@@ -46,8 +51,11 @@ class SECURITY_DESCRIPTOR : BaseWin32Class
 		[IntPtr[]] $Pointers = [IntPtr[]]::new(4)
 
 		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged, $Data8, 0, $Data8.Length)
-		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 2, $Data16, 0, $Data16.Length)
-		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 4, $Pointers, 0, $Pointers.Length)
+		$Offset = 2
+		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + $Offset, $Data16, 0, $Data16.Length)
+		$Offset += 2
+		if ([System.IntPtr]::Size -eq 8) { $Offset += 4 }
+		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + $Offset, $Pointers, 0, $Pointers.Length)
 
 		$this.Revision = $Data8[0]
 		$this.Sbz1 = $Data8[1]
@@ -65,7 +73,9 @@ class SECURITY_DESCRIPTOR : BaseWin32Class
 	{
 		[IntPtr[]] $Pointers = [IntPtr[]]::new(4)
 
-		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + 4, $Pointers, 0, $Pointers.Length)
+		$Offset = 4
+		if ([System.IntPtr]::Size -eq 8) { $Offset += 4 }
+		[System.Runtime.InteropServices.Marshal]::Copy($Unmanaged.ToInt64() + $Offset, $Pointers, 0, $Pointers.Length)
 
 		if ($Pointers[0] -ne [IntPtr]::Zero) { ([SID]::new()).FreeUnmanaged($Pointers[0]) }
 		if ($Pointers[1] -ne [IntPtr]::Zero) { ([SID]::new()).FreeUnmanaged($Pointers[1]) }

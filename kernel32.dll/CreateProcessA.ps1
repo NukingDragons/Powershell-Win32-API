@@ -2,19 +2,28 @@
 # Depends on structures/STARTUPINFOA.ps1
 # Depends on structures/PROCESS_INFORMATION.ps1
 # Depends on structures/SECURITY_ATTRIBUTES.ps1
+# Depends on enums/PROCESS_CREATION_FLAGS.ps1
 function CreateProcessA
 {
     [CmdletBinding(DefaultParameterSetName="ApplicationName")]
 	param(
 		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = "Both")]
 		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = "ApplicationName")]
-		[Parameter(                                 ParameterSetName = "CommandLine")]
 		[String] $lpApplicationName = "",
 
 		[Parameter(Position = 1, Mandatory = $True, ParameterSetName = "Both")]
-		[Parameter(                                 ParameterSetName = "ApplicationName")]
 		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = "CommandLine")]
-		[ref][String] $lpCommandLine,
+		[ValidateScript({
+			if($_.Value.GetType().Name -eq "String")
+			{
+				return $true
+			}
+			else
+			{
+				throw "Expected a String by reference"
+			}
+			})]
+		[ref] $lpCommandLine,
 
 		[Parameter(Position = 2,                    ParameterSetName = "Both")]
 		[Parameter(Position = 1,                    ParameterSetName = "ApplicationName")]
@@ -34,7 +43,7 @@ function CreateProcessA
 		[Parameter(Position = 5, Mandatory = $True, ParameterSetName = "Both")]
 		[Parameter(Position = 4, Mandatory = $True, ParameterSetName = "ApplicationName")]
 		[Parameter(Position = 4, Mandatory = $True, ParameterSetName = "CommandLine")]
-		[UInt32] $dwCreationFlags,
+		[PROCESS_CREATION_FLAGS] $dwCreationFlags,
 
 		[Parameter(Position = 6,                    ParameterSetName = "Both")]
 		[Parameter(Position = 5,                    ParameterSetName = "ApplicationName")]
@@ -44,7 +53,7 @@ function CreateProcessA
 		[Parameter(Position = 7,                    ParameterSetName = "Both")]
 		[Parameter(Position = 6,                    ParameterSetName = "ApplicationName")]
 		[Parameter(Position = 6,                    ParameterSetName = "CommandLine")]
-		[String] $lpCurrentDirectory = (pwd).Path,
+		[String] $lpCurrentDirectory = "",
 
 		[Parameter(Position = 8, Mandatory = $True, ParameterSetName = "Both")]
 		[Parameter(Position = 7, Mandatory = $True, ParameterSetName = "ApplicationName")]
@@ -71,14 +80,14 @@ function CreateProcessA
 	$lpStartupInfoMem = $lpStartupInfo.ToUnmanaged()
 	$lpProcessInformationMem = $lpProcessInformation.ToUnmanaged()
 
-	if ($lpApplicationName) { $lpApplicationNameAnsi = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAnsi($lpApplicationName) }
-	if ($lpCommandLine) { $lpCommandLineAnsi = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAnsi($lpCommandLine) }
+	if ($lpApplicationName.Length -gt 0) { $lpApplicationNameAnsi = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAnsi($lpApplicationName) }
+	if ($lpCommandLine.Value.Length -gt 0) { $lpCommandLineAnsi = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAnsi($lpCommandLine.Value) }
 	if ($lpProcessAttributes) { $lpProcessAttributesMem = $lpProcessAttributes.ToUnmanaged() }
 	if ($lpThreadAttributes) { $lpThreadAttributesMem = $lpThreadAttributes.ToUnmanaged() }
-	if ($bInheritHandles) { $InHeritHandles = 1 }
-	if ($lpCurrentDirectory) { $lpCurrentDirectoryAnsi = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAnsi($lpCurrentDirectory) }
+	if ($bInheritHandles -eq $True) { $InheritHandles = 1 }
+	if ($lpCurrentDirectory.Length -gt 0) { $lpCurrentDirectoryAnsi = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAnsi($lpCurrentDirectory) }
 
-	$ret = $global:CreateProcessA.Invoke($lpApplicationNameAnsi, $lpCommandLineAnsi, $lpProcessAttributesMem, $lpThreadAttributesMem, $InheritHandles, $dwCreationFlags, $lpEnvironment, $lpCurrentDirectoryAnsi, $lpStartupInfoMem, $lpProcessInformationMem)
+	$ret = $global:CreateProcessA.Invoke($lpApplicationNameAnsi, $lpCommandLineAnsi, $lpProcessAttributesMem, $lpThreadAttributesMem, $InheritHandles, ([UInt32]$dwCreationFlags), $lpEnvironment, $lpCurrentDirectoryAnsi, $lpStartupInfoMem, $lpProcessInformationMem)
 
 	if ($lpApplicationName) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpApplicationNameAnsi) }
 	if ($lpProcessAttributes) { $lpProcessAttributes.FreeUnmanaged($lpProcessAttributesMem) }
@@ -89,7 +98,7 @@ function CreateProcessA
 
 	if ($lpCommandLine)
 	{
-		$lpCommandLine = [System.Runtime.InteropServices.Marshal]::PtrToStringAnsi($lpCommandLineAnsi)
+		$lpCommandLine.Value = [System.Runtime.InteropServices.Marshal]::PtrToStringAnsi($lpCommandLineAnsi)
 		[System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpCommandLineAnsi)
 	}
 

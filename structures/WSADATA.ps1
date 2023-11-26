@@ -11,6 +11,7 @@ class WSADATA : BaseWin32Class
 
 	[UInt64] Size()
 	{
+		# Somehow, this ends up being 8-byte aligned (and therefore 4-byte aligned), so no padding needed for this pointer
 		return [System.IntPtr]::Size + 255 + 127 + 10
 	}
 
