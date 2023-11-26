@@ -1,4 +1,6 @@
 # Depends on BaseWin32Class.ps1
+# Depends on enums/STARTUPINFO_FLAGS.ps1
+# Depends on enums/STARTUPINFO_FILLATTRIBUTES.ps1
 class STARTUPINFOA : BaseWin32Class
 {
 	[UInt32] $cb = $this.Size()
@@ -11,8 +13,8 @@ class STARTUPINFOA : BaseWin32Class
 	[UInt32] $dwYSize
 	[UInt32] $dwXCountChars
 	[UInt32] $dwYCountChars
-	[UInt32] $dwFillAttribute
-	[UInt32] $dwFlags
+	[STARTUPINFO_FILLATTRIBUTES] $dwFillAttribute
+	[STARTUPINFO_FLAGS] $dwFlags
 	[UInt16] $wShowWindow
 	[UInt16] $cbReserved2
 	[Byte[]] $lpReserved2 = $null
@@ -66,7 +68,7 @@ class STARTUPINFOA : BaseWin32Class
 
 		[UInt32[]] $CountBytes = @($this.cb)
 		[IntPtr[]] $Strings = @($lpReservedAnsi, $lpDesktopAnsi, $lpTitleAnsi)
-		[UInt32[]] $Data32 = @($this.dwX, $this.dwY, $this.dwXSize, $this.dwYSize, $this.dwXCountChars, $this.dwYCountChars, $this.dwFillAttribute, $this.dwFlags)
+		[UInt32[]] $Data32 = @($this.dwX, $this.dwY, $this.dwXSize, $this.dwYSize, $this.dwXCountChars, $this.dwYCountChars, [UInt32] $this.dwFillAttribute, [UInt32] $this.dwFlags)
 		[UInt16[]] $Data16 = @($this.wShowWindow, $this.cbReserved2)
 		[IntPtr[]] $Stdio = @($this.hStdInput, $this.hStdOutput, $this.hStdError)
 

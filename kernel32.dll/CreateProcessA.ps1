@@ -48,7 +48,7 @@ function CreateProcessA
 		[Parameter(Position = 6,                    ParameterSetName = "Both")]
 		[Parameter(Position = 5,                    ParameterSetName = "ApplicationName")]
 		[Parameter(Position = 5,                    ParameterSetName = "CommandLine")]
-		[IntPtr] $lpEnvironment = [IntPtr]::Zero,
+		[String[]] $lpEnvironment = @(),
 
 		[Parameter(Position = 7,                    ParameterSetName = "Both")]
 		[Parameter(Position = 6,                    ParameterSetName = "ApplicationName")]
@@ -76,6 +76,7 @@ function CreateProcessA
 	$lpProcessAttributesMem = [IntPtr]::Zero
 	$lpThreadAttributesMem = [IntPtr]::Zero
 	$InheritHandles = 0
+	$lpEnvironmentMem = [IntPtr]::Zero
 	$lpCurrentDirectoryAnsi = [IntPtr]::Zero
 	$lpStartupInfoMem = $lpStartupInfo.ToUnmanaged()
 	$lpProcessInformationMem = $lpProcessInformation.ToUnmanaged()
@@ -87,7 +88,44 @@ function CreateProcessA
 	if ($bInheritHandles -eq $True) { $InheritHandles = 1 }
 	if ($lpCurrentDirectory.Length -gt 0) { $lpCurrentDirectoryAnsi = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAnsi($lpCurrentDirectory) }
 
-	$ret = $global:CreateProcessA.Invoke($lpApplicationNameAnsi, $lpCommandLineAnsi, $lpProcessAttributesMem, $lpThreadAttributesMem, $InheritHandles, ([UInt32]$dwCreationFlags), $lpEnvironment, $lpCurrentDirectoryAnsi, $lpStartupInfoMem, $lpProcessInformationMem)
+	if ($lpEnvironment.Length -gt 0)
+	{
+		$TerminatorSize = 1
+		if ($dwCreationFlags.HasFlag([PROCESS_CREATION_FLAGS]::CREATE_UNICODE_ENVIRONMENT))
+		{
+			$TerminatorSize = 2
+		}
+
+		# The environment block needs an extra terminator at the end
+		$Length = $TerminatorSize
+		foreach ($EnvVar in $lpEnvironment)
+		{
+			# If terminator size is 2, then it's unicode and the length needs to be doubled
+			$Length += ($EnvVar.Length * $TerminatorSize) + $TerminatorSize
+		}
+
+		$lpEnvironmentMem = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($Length)
+		[Byte[]] $Raw = [Byte[]]::new($Length)
+		[System.Runtime.InteropServices.Marshal]::Copy($Raw, 0, $lpEnvironmentMem, $Length)
+
+		# Populate each string into the environment block
+		$Offset = 0
+		foreach ($EnvVar in $lpEnvironment)
+		{
+			$EnvVarLength = ($EnvVar.Length * $TerminatorSize) + $TerminatorSize
+			[Byte[]] $EnvVarBytes = [Byte[]]::new($EnvVarLength)
+			[IntPtr] $EnvVarStr = [IntPtr]::Zero
+			if ($TerminatorSize -eq 1) { $EnvVarStr = [System.Runtime.InteropServices.Marshal]::StringToHGlobalAnsi($EnvVar) }
+			else { $EnvVarStr = [System.Runtime.InteropServices.Marshal]::StringToHGlobalUni($EnvVar) }
+			[System.Runtime.InteropServices.Marshal]::Copy($EnvVarStr, $EnvVarBytes, 0, $EnvVarLength)
+			[System.Runtime.InteropServices.Marshal]::FreeHGlobal($EnvVarStr)
+
+			[System.Runtime.InteropServices.Marshal]::Copy($EnvVarBytes, 0, $lpEnvironmentMem.ToInt64() + $Offset, $EnvVarLength)
+			$Offset += $EnvVarLength
+		}
+	}
+
+	$ret = $global:CreateProcessA.Invoke($lpApplicationNameAnsi, $lpCommandLineAnsi, $lpProcessAttributesMem, $lpThreadAttributesMem, $InheritHandles, ([UInt32]$dwCreationFlags), $lpEnvironmentMem, $lpCurrentDirectoryAnsi, $lpStartupInfoMem, $lpProcessInformationMem)
 
 	if ($lpApplicationName) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpApplicationNameAnsi) }
 	if ($lpProcessAttributes) { $lpProcessAttributes.FreeUnmanaged($lpProcessAttributesMem) }
