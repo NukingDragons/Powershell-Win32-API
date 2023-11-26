@@ -127,14 +127,15 @@ function CreateProcessW
 
 	$ret = $global:CreateProcessW.Invoke($lpApplicationNameUni, $lpCommandLineUni, $lpProcessAttributesMem, $lpThreadAttributesMem, $InheritHandles, ([UInt32]$dwCreationFlags), $lpEnvironmentMem, $lpCurrentDirectoryUni, $lpStartupInfoMem, $lpProcessInformationMem)
 
-	if ($lpApplicationName) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpApplicationNameUni) }
+	if ($lpApplicationName.Length -gt 0) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpApplicationNameUni) }
 	if ($lpProcessAttributes) { $lpProcessAttributes.FreeUnmanaged($lpProcessAttributesMem) }
 	if ($lpThreadAttributes) { $lpThreadAttributes.FreeUnmanaged($lpThreadAttributesMem) }
-	if ($lpCurrentDirectory) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpCurrentDirectoryUni) }
+	if ($lpEnvironment.Length -gt 0) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpEnvironmentMem) }
+	if ($lpCurrentDirectory.Length -gt 0) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpCurrentDirectoryUni) }
 
 	$lpStartupInfo.FreeUnmanaged($lpStartupInfoMem)
 
-	if ($lpCommandLine)
+	if ($lpCommandLine.Value.Length -gt 0)
 	{
 		$lpCommandLine.Value = [System.Runtime.InteropServices.Marshal]::PtrToStringUni($lpCommandLineUni)
 		[System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpCommandLineUni)

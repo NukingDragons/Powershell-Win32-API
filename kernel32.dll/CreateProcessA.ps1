@@ -127,14 +127,15 @@ function CreateProcessA
 
 	$ret = $global:CreateProcessA.Invoke($lpApplicationNameAnsi, $lpCommandLineAnsi, $lpProcessAttributesMem, $lpThreadAttributesMem, $InheritHandles, ([UInt32]$dwCreationFlags), $lpEnvironmentMem, $lpCurrentDirectoryAnsi, $lpStartupInfoMem, $lpProcessInformationMem)
 
-	if ($lpApplicationName) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpApplicationNameAnsi) }
+	if ($lpApplicationName.Length -gt 0) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpApplicationNameAnsi) }
 	if ($lpProcessAttributes) { $lpProcessAttributes.FreeUnmanaged($lpProcessAttributesMem) }
 	if ($lpThreadAttributes) { $lpThreadAttributes.FreeUnmanaged($lpThreadAttributesMem) }
-	if ($lpCurrentDirectory) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpCurrentDirectoryAnsi) }
+	if ($lpEnvironment.Length -gt 0) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpEnvironmentMem) }
+	if ($lpCurrentDirectory.Length -gt 0) { [System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpCurrentDirectoryAnsi) }
 
 	$lpStartupInfo.FreeUnmanaged($lpStartupInfoMem)
 
-	if ($lpCommandLine)
+	if ($lpCommandLine.Value.Length -gt 0)
 	{
 		$lpCommandLine.Value = [System.Runtime.InteropServices.Marshal]::PtrToStringAnsi($lpCommandLineAnsi)
 		[System.Runtime.InteropServices.Marshal]::FreeHGlobal($lpCommandLineAnsi)

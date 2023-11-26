@@ -6,7 +6,7 @@
 function WSAConnect
 {
 	param(
-		[Parameter(Position = 0, Mandatory = $True)][UInt64] $s,
+		[Parameter(Position = 0, Mandatory = $True)][IntPtr] $s,
 		[Parameter(Position = 1, Mandatory = $True)]
 		[ValidateScript({
 			if($_.GetType().Name -eq "SOCKADDR_IN" -or $_.GetType().Name -eq "SOCKADDR_IN6")
@@ -28,7 +28,7 @@ function WSAConnect
 
 	if ($global:WSAConnect -eq $null)
 	{
-		$global:WSAConnect = LoadFunction ws2_32.dll WSAConnect @([UInt64], [IntPtr], [Int32], [IntPtr], [IntPtr], [IntPtr], [IntPtr]) ([UInt64])
+		$global:WSAConnect = LoadFunction ws2_32.dll WSAConnect @([IntPtr], [IntPtr], [Int32], [IntPtr], [IntPtr], [IntPtr], [IntPtr]) ([UInt64])
 	}
 
 	$nameMem = $name.ToUnmanaged()

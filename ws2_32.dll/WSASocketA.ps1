@@ -13,7 +13,7 @@ function WSASocketA
 
 	if ($global:WSASocketA -eq $null)
 	{
-		$global:WSASocketA = LoadFunction ws2_32.dll WSASocketA @([Int32], [Int32], [Int32], [IntPtr], [UInt32], [UInt32]) ([UInt64])
+		$global:WSASocketA = LoadFunction ws2_32.dll WSASocketA @([Int32], [Int32], [Int32], [IntPtr], [UInt32], [UInt32]) ([IntPtr])
 	}
 
 	$lpProtocolInfoMem = [IntPtr]::Zero
