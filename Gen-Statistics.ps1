@@ -50,7 +50,7 @@
 		}
 	}
 
-	$Scripts = (Get-ChildItem -Recurse -Filter "*.ps1" $ModuleName).Name -replace ".ps1"
+	$Scripts = (Get-ChildItem -Recurse -Filter "*.ps1").Name -replace ".ps1"
 
 	$AllSymbols = (dumpbin ($Path + '\' + $ModuleName)).Name
 	$ImplementedSymbols = $AllSymbols | Where-Object { $Scripts -contains $_ }
@@ -65,3 +65,4 @@ echo "| - | - |"
 Calc-Statistic "C:\Windows\System32" "kernel32.dll"
 Calc-Statistic "C:\Windows\System32" "ws2_32.dll"
 Calc-Statistic "C:\Windows\System32" "ntdll.dll"
+Calc-Statistic "C:\Windows\System32" "advapi32.dll"
