@@ -26,7 +26,7 @@
 		}
 	}
 
-	[System.Collections.ArrayList] $FetchedFiles = @("LoadFunction.ps1")
+	[System.Collections.ArrayList] $FetchedFiles = @("kernel32.dll/LoadLibraryW.ps1", "kernel32.dll/GetProcAddress.ps1", "LoadFunction.ps1")
 
 	if ($InputFile)
 	{

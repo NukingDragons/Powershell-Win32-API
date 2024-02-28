@@ -12,8 +12,9 @@ function LoadFunction
 
 	[IntPtr] $FuncPtr = [IntPtr]::Zero
 
-	# If the GetProcAddress/LoadLibraryW functions have been created, use them instead
-	if ($global:GetProcAddress -eq $null -or $global:LoadLibraryW -eq $null)
+	# If GetProcAddress or LoadLibraryW haven't been specified, *and* if the current module is kernel32, **and** if the function
+	# name is either of those functions, use the manual method. Otherwise, use the powershell functions
+	if (($global:GetProcAddress -eq $null -or $global:LoadLibraryW -eq $null) -and (($FunctionName -eq "GetProcAddress" -or $FunctionName -eq "LoadLibraryW") -and $ModuleName -eq "kernel32.dll"))
 	{
 		# Get all of the unsafe methods from the System assembly
 		$UnsafeMethods = ([AppDomain]::CurrentDomain.GetAssemblies() | where { $_.GlobalAssemblyCache -And $_.Location.Split('\\')[-1].Equals('System.dll') }).GetType('Microsoft.Win32.UnsafeNativeMethods').GetMethods()
@@ -31,9 +32,7 @@ function LoadFunction
 		# Fetch the function requested
 		$FuncPtr = $GetProcAddress.Invoke($null, @($GetModuleHandle.Invoke($null, @($ModuleName)), $FunctionName))
 	}
-
-	# If we don't have the function pointer, attempt to load it with with LoadLibraryW + GetProcAddress
-	if ($FuncPtr -eq [IntPtr]::Zero)
+	else
 	{
 		$Handle = LoadLibraryW $ModuleName
 

@@ -5,8 +5,9 @@ A collection of powershell scripts that implement the Win32 API
 
 | Module | Percentage Implemented |
 | - | - |
-| kernel32.dll | 0.43% |
+| kernel32.dll | 0.55% |
 | ws2_32.dll | 3.08% |
+| ntdll.dll | 0.00% |
 
 # Usage
 
